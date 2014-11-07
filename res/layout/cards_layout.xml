@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="0sp"
+                  android:layout_height="match_parent"
+                  android:layout_weight="6">
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="Decks to draw cards from"
+                  android:gravity="center"
+                  android:textSize="15dp"/>
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="0sp"
+                  android:layout_height="match_parent"
+                  android:layout_weight="10"
+                  android:divider="@drawable/divider"
+                  android:showDividers="middle">
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="Player x turn"
+                  android:gravity="center"
+                  android:textSize="15dp"/>
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="Your available cards"
+                  android:gravity="center"
+                  android:textSize="15dp"/>
+    </LinearLayout>
+
+</LinearLayout>
