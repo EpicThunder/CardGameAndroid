@@ -14,7 +14,7 @@ public class DeckFactory {
 
     static CardFactory cardFactory;
 
-    public static List<Card> getDeck1(DatabaseAdapter databaseAdapter) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+    public static List<Card> getDeck1() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         cardFactory = new CardFactory();
         List<Card> deck = new ArrayList<Card>();
         for(int i=0; i<5; i++) deck.add(cardFactory.getUnitCard("Guard"));
@@ -42,7 +42,7 @@ public class DeckFactory {
         return deck;
     }
 
-    public static List<Card> getDeck2(DatabaseAdapter databaseAdapter) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+    public static List<Card> getDeck2() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         cardFactory = new CardFactory();
         List<Card> deck = new ArrayList<Card>();
         for(int i=0; i<5; i++) deck.add(cardFactory.getUnitCard("Mercenary"));

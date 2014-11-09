@@ -7,7 +7,7 @@ import java.util.*;
  */
 public interface AI {
     void draw(State state);
-    void play(State state, Board board) throws IllegalAccessException, InstantiationException;
+    void play(State state, AIuses callBackClass) throws IllegalAccessException, InstantiationException;
 }
 
 class Test implements AI {
@@ -42,7 +42,7 @@ class Test implements AI {
         state.getCurrentPlayer().drawUnit();
     }
 
-    public void play(State state, Board board) throws IllegalAccessException, InstantiationException {
+    public void play(State state, AIuses callBackClass) throws IllegalAccessException, InstantiationException {
 
         long startTime = System.currentTimeMillis();
         State newCopyOfState = new State(state);
@@ -471,8 +471,8 @@ class Test implements AI {
         }
 
         if(stateAtTheEndOfPlayersTurn == null) System.out.println("Future state is null");
-        if(stateAtTheEndOfPlayersTurn != null) { board.setState(stateAtTheEndOfPlayersTurn); player = stateAtTheEndOfPlayersTurn.getPlayer(id); System.out.println("Gold at the end of turn:"+stateAtTheEndOfPlayersTurn.getCurrentPlayer().getGold()); }
-        board.endTurn();
+        if(stateAtTheEndOfPlayersTurn != null) { callBackClass.setState(stateAtTheEndOfPlayersTurn); player = stateAtTheEndOfPlayersTurn.getPlayer(id); System.out.println("Gold at the end of turn:"+stateAtTheEndOfPlayersTurn.getCurrentPlayer().getGold()); }
+        callBackClass.endTurn();
         /*for(Player aPlayer:stateAtTheEndOfPlayersTurn.getPlayers()) {
             System.out.println("Player"+aPlayer.getID()+" opponent cards at base:");
             Card base = stateAtTheEndOfPlayersTurn.findBase(aPlayer);

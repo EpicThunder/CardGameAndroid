@@ -76,10 +76,6 @@ public class CardsView extends View {
                         invalidate();
                         Match match = (Match) this.getContext();
                         match.cardSelected(cardClicked);
-                        /*if(cardClicked.canPay()) {
-                            Match match = (Match) this.getContext();
-                            match.setCardOnBoard(cardClicked);
-                        }*/
                     }
                 }
             }
@@ -99,17 +95,17 @@ public class CardsView extends View {
 
     public void newGame(State startState) { state = startState; cardsToDraw = 5; }
 
+    public void setState(State newState) { state = newState; onHand = state.getCurrentPlayer().getCards(); }
+
     public void cardDrawn() {
         cardsToDraw--; onHand = state.getCurrentPlayer().getCards();
-        widthSpace = width - (card.getIntrinsicWidth()*onHand.size());
-        invalidate();
+        myInvalidate();
     }
 
     public boolean canDraw() { return 0<cardsToDraw; }
 
-    @Override
-    public void invalidate() {
+    public void myInvalidate() {
         widthSpace = width - (card.getIntrinsicWidth()*onHand.size());
-        super.invalidate();
+        invalidate();
     }
 }

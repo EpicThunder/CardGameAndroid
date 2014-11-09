@@ -10,7 +10,7 @@ import java.util.*;
  * Time: 15:54
  * To change this template use File | Settings | File Templates.
  */
-public class Board {
+public class Board implements AIuses {
     private State state = new State();
     private List<List<Cell>> board = new ArrayList<List<Cell>>();
     private List<Player> players = new ArrayList<Player>();

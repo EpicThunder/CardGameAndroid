@@ -94,8 +94,8 @@ public class CardFactory {
 
         UnitCard uCard = new UnitCard(cardCount, name, cost, health, mana, attackRange,
                 move, weakspotChance, unitType, attack, defences, damageReductions,
-                (Move)Class.forName(moveType).newInstance(), (Attack)Class.forName(attackType).newInstance(),
-                (DamageTaken)Class.forName(damageCalculation).newInstance(), abilities, effects);
+                (Move)Class.forName("CardGame."+moveType).newInstance(), (Attack)Class.forName("CardGame."+attackType).newInstance(),
+                (DamageTaken)Class.forName("CardGame."+damageCalculation).newInstance(), abilities, effects);
 
         rs.close();
         cardCount++;
@@ -156,9 +156,9 @@ public class CardFactory {
         }
 
         StructureCard sCard = new StructureCard(cardCount, name, cost, health, mana, attackRange, moveRange, buildTime,
-                structureType, attack, damageReductions, (Move)Class.forName(moveType).newInstance(),
-                (Attack)Class.forName(attackType).newInstance(),
-                (DamageTaken)Class.forName(damageCalculation).newInstance(), abilities, effects);
+                structureType, attack, damageReductions, (Move)Class.forName("CardGame."+moveType).newInstance(),
+                (Attack)Class.forName("CardGame."+attackType).newInstance(),
+                (DamageTaken)Class.forName("CardGame."+damageCalculation).newInstance(), abilities, effects);
         rs.close();
         cardCount++;
         return sCard;

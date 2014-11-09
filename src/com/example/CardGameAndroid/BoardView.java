@@ -128,14 +128,7 @@ public class BoardView extends View {
         return true;
     }
 
-    public void setBoardState(int size, State startState) {
-        /*SIZE = size;
-        List<CardCoordinate> row;
-        for(int r=0; r<SIZE; r++) {
-            row = new ArrayList<CardCoordinate>();
-            for(int c=0; c<SIZE; c++) row.add(new CardCoordinate(c, r));
-            cardsOnBoard.add(row);
-        }*/
+    public void setBoardState(State startState) {
         state = startState;
         SIZE = state.boardColSize();
         stateSet = true;

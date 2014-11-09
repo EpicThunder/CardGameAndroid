@@ -2,10 +2,11 @@ package com.example.CardGameAndroid;
 
 import CardGame.*;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
+import junit.framework.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by Kristján on 3.11.2014.
  */
-public class Match extends Activity {
+public class Match extends Activity implements AIuses {
 
     private State state = new State();
     private int cardsToDraw;
@@ -21,19 +22,40 @@ public class Match extends Activity {
     private BoardView board;
     private TextView turnView, cardInfoView;
     private Player player;
+    private Match thisClass;
+    private boolean AIturn;
+
+    class RunAI extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            AI ai = ReturnAI.getTestAI(1, state);
+            if(!state.isFirstRound()) ai.draw(state);
+            else for(int i=0, size=5; i<size; i++) ai.draw(state);
+            try {
+                ai.play(state, thisClass);
+            } catch (IllegalAccessException e) {
+                endTurn();
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                endTurn();
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.match);
 
+        AIturn = false;
+        thisClass = this;
         cardsView = (CardsView)findViewById(R.id.cards);
         board = (BoardView)findViewById(R.id.board);
         turnView = (TextView)findViewById(R.id.playerTurn);
         cardInfoView = (TextView)findViewById(R.id.cardInfo);
-
-        //DatabaseAdapter databaseAdapter = new DatabaseAdapter(this);
-
-        //Cursor cursor = databaseAdapter.queryTableRow("Guard", "Unit", DbHelper.TableUnitCardsCols[1]);
 
         try {
             List<Card> deck = DeckFactory.getDeck1Second();
@@ -59,6 +81,7 @@ public class Match extends Activity {
     }
 
     public void cellClicked(int row, int col) {
+        if(AIturn) return;
         for(Cell cell:state.getInfluencedCells(state.getCurrentPlayer())) {
             if(cell.getRowPos() == row && cell.getColPos() == col) {
                 Card cardToSet = cardsView.setCard();
@@ -94,9 +117,16 @@ public class Match extends Activity {
 
     public void buttonClick(View view) {
         cardsView.turnEnd();
+        state.endTurn();
+        AIturn = true;
+        state.checkLoss();
+        if(state.isGameWon()) finish();
+        state.newTurn();
+        new RunAI().execute();
     }
 
     public void imageButtonClick(View view) {
+        if(AIturn) return;
         ImageButton button = (ImageButton)view;
         int id = button.getId();
         if(id == R.id.unitDeck && cardsView.canDraw() ) {
@@ -122,7 +152,20 @@ public class Match extends Activity {
         state.newTurn();
         turnView.setText("Player " + state.getPlayersTurn() + " turn. Gold:" + state.getCurrentPlayer().getGold() + ". Mana:" + state.getCurrentPlayer().getMana() + ".");
         cardsToDraw = 5;
-        board.setBoardState(6,state);
+        board.setBoardState(state);
         cardsView.newGame(state);
+    }
+
+    public void setState(State newState){
+        state = newState;
+        cardsView.setState(state);
+        board.setBoardState(state);
+    }
+    public void endTurn(){
+        state.endTurn();
+        state.checkLoss();
+        if(state.isGameWon()) finish();
+        AIturn = false;
+        state.newTurn();
     }
 }
