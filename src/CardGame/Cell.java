@@ -45,6 +45,10 @@ public class Cell {
             for(Player newPlayer:newPlayers) if(player.getID() == newPlayer.getID()) card.setOwner(newPlayer);
     }
 
+    public boolean hasCardAtCell(Player player) {
+        for(Card card:cards) if(card.getOwner().getID() == player.getID() && card.getName() != "Base") return true;
+        return false;
+    }
     public boolean hasCard(int id) { for(Card card:cards) if(card.getID() == id) return true; return false; }
     public Card getCard(String name) {
         for(Card card:cards) if(card.getName().equals(name)) return card;

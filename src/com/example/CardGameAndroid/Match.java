@@ -2,12 +2,10 @@ package com.example.CardGameAndroid;
 
 import CardGame.*;
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.widget.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,6 +19,8 @@ public class Match extends Activity {
     private int cardsToDraw;
     private CardsView cardsView;
     private BoardView board;
+    private TextView turnView, cardInfoView;
+    private Player player;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,23 +28,25 @@ public class Match extends Activity {
 
         cardsView = (CardsView)findViewById(R.id.cards);
         board = (BoardView)findViewById(R.id.board);
+        turnView = (TextView)findViewById(R.id.playerTurn);
+        cardInfoView = (TextView)findViewById(R.id.cardInfo);
 
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter(this);
+        //DatabaseAdapter databaseAdapter = new DatabaseAdapter(this);
+
+        //Cursor cursor = databaseAdapter.queryTableRow("Guard", "Unit", DbHelper.TableUnitCardsCols[1]);
 
         try {
-            List<Card> deck = DeckFactory.getDeck1(databaseAdapter);
-            if(deck.size()<1) ;
-            Player player = new Player(deck);
-            state.addPlayer(player);
-            deck = DeckFactory.getDeck2(databaseAdapter);
-            if(deck.size()<1) ;
-            player = new Player(deck);
-            state.addPlayer(player);
-            state.setBoard(TerrainFactory.getDesertTerrain());
+            List<Card> deck = DeckFactory.getDeck1Second();
+            state.addPlayer(new Player(deck));
+            deck = DeckFactory.getDeck2Second();
+            state.addPlayer(new Player(deck));
+            List<List<Cell>> board = TerrainFactory.getDesertTerrain();
+            state.setBoard(board);
             state.addCardToBoard(new Base(state.getPlayer(0)), 1, 1);
             state.addCardToBoard(new Base(state.getPlayer(1)), 4, 4);
-            for(int r=0; r<3; r++) for(int c=0; c<3; r++) state.setOwner(r, c, state.getPlayer(0));
-            for(int r=4; r<7; r++) for(int c=4; c<7; r++) state.setOwner(r, c, state.getPlayer(1));
+            for(int r=0; r<3; r++) for(int c=0; c<3; c++) state.setOwner(r, c, state.getPlayer(0));
+            for(int r=3; r<6; r++) for(int c=3; c<6; c++) state.setOwner(r, c, state.getPlayer(1));
+            startNewMatch();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -54,18 +56,48 @@ public class Match extends Activity {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        startNewMatch();
+    }
 
-        /*BoardFragment boardFragment = new BoardFragment();
-        boardFragment.setArguments(getIntent().getExtras());
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();*/
-        //fragmentTransaction.add(R.id.board_fragment, boardFragment);
-        //fragmentTransaction.commit();
+    public void cellClicked(int row, int col) {
+        for(Cell cell:state.getInfluencedCells(state.getCurrentPlayer())) {
+            if(cell.getRowPos() == row && cell.getColPos() == col) {
+                Card cardToSet = cardsView.setCard();
+                if(cell.placeCard(cardToSet)) {
+                    turnView.setText("Player " + state.getPlayersTurn() + " turn. Gold:" + state.getCurrentPlayer().getGold() + ". Mana:" + state.getCurrentPlayer().getMana() + ".");
+                    cardInfoView.setText("Your available cards");
+                    board.invalidate();
+                    cardsView.invalidate();
+                }
+                break;
+            }
+        }
+    }
+
+    public void cardSelected(Card card) {
+        CardThatCanBattle battleCard;
+        String text = card.getName()+" - Cost:"+card.getCost();
+        if(card.getCardCategory() == "Unit" || card.getCardCategory() == "Structure") {
+            battleCard = (CardThatCanBattle)card;
+            text += " Health:"+battleCard.getHealth();
+            int totalDamage = 0;
+            for(Damage damage:battleCard.getAttack()) totalDamage += damage.getDamage();
+            if(totalDamage > 0) text += " Attack:"+totalDamage;
+            if(card.getCardCategory() == "Unit") {
+                for(Defence defence:((UnitCard)card).getDefences()) {
+                    text += " Defence:"+defence.getDefence()+" Mitigation chance:"+defence.getCoverage();
+                }
+            }
+            else text += " Build time:"+((StructureCard)card).getBuildTime();
+        } else if(card.getCardCategory() == "Spell") text += " mana";
+        cardInfoView.setText(text);
     }
 
     public void buttonClick(View view) {
-        Button button = (Button)view;
+        cardsView.turnEnd();
+    }
+
+    public void imageButtonClick(View view) {
+        ImageButton button = (ImageButton)view;
         int id = button.getId();
         if(id == R.id.unitDeck && cardsView.canDraw() ) {
             if(state.getCurrentPlayer().drawUnit()) cardsView.cardDrawn();
@@ -76,7 +108,6 @@ public class Match extends Activity {
         else if ( id == R.id.spellDeck && cardsView.canDraw() ) {
             if(state.getCurrentPlayer().drawSpell()) cardsView.cardDrawn();
         }
-        //else if ( id == R.id.endTurn ) {}
     }
 
     public void startNewMatch() {
@@ -88,7 +119,10 @@ public class Match extends Activity {
             e.printStackTrace();
         }
         state.setFirstRound(true);
+        state.newTurn();
+        turnView.setText("Player " + state.getPlayersTurn() + " turn. Gold:" + state.getCurrentPlayer().getGold() + ". Mana:" + state.getCurrentPlayer().getMana() + ".");
         cardsToDraw = 5;
+        board.setBoardState(6,state);
         cardsView.newGame(state);
     }
 }

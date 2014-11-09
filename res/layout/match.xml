@@ -44,7 +44,8 @@
                           android:layout_weight="8"
                           android:divider="@drawable/divider"
                           android:showDividers="middle">
-                <LinearLayout android:orientation="horizontal"
+                <LinearLayout android:id="@+id/deckLayout"
+                              android:orientation="horizontal"
                               android:layout_width="match_parent"
                               android:layout_height="0dp"
                               android:layout_weight="5"
@@ -54,22 +55,22 @@
                                  android:layout_height="wrap_content"
                                  android:src="@drawable/unit_deck"
                                  android:padding="0sp"
-                                 android:layout_marginLeft="5dp"
-                                 android:onClick="buttonClick"/>
+                                 android:layout_marginLeft="10dp"
+                                 android:onClick="imageButtonClick"/>
                     <ImageButton android:id="@+id/itemStructureDeck"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:src="@drawable/structure_and_item_deck"
                                  android:padding="0sp"
-                                 android:layout_marginLeft="4dp"
-                                 android:onClick="buttonClick"/>
+                                 android:layout_marginLeft="10dp"
+                                 android:onClick="imageButtonClick"/>
                     <ImageButton android:id="@+id/spellDeck"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:src="@drawable/spell_deck"
                                  android:padding="0sp"
-                                 android:layout_marginLeft="4dp"
-                                 android:onClick="buttonClick"/>
+                                 android:layout_marginLeft="10dp"
+                                 android:onClick="imageButtonClick"/>
                 </LinearLayout>
                 <Button android:id="@+id/endTurn"
                         android:layout_width="match_parent"
@@ -95,7 +96,8 @@
                           android:layout_weight="8"
                           android:divider="@drawable/weak_divider"
                           android:showDividers="middle">
-            <TextView android:layout_width="match_parent"
+            <TextView android:id="@+id/cardInfo"
+                      android:layout_width="match_parent"
                       android:layout_height="0dp"
                       android:layout_weight="2"
                       android:text="Your available cards"
@@ -107,7 +109,8 @@
                     android:layout_height="0dp"
                     android:layout_weight="6"/>
             </LinearLayout>
-            <TextView android:layout_width="match_parent"
+            <TextView android:id="@+id/playerTurn"
+                      android:layout_width="match_parent"
                       android:layout_height="0dp"
                       android:layout_weight="2"
                       android:text="Player x turn"

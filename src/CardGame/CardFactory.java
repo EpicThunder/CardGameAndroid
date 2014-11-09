@@ -201,7 +201,9 @@ public class CardFactory {
     public boolean isConnected() { if(failedToConnect) return false; else return true; }
 
     public void closeFactory() throws SQLException {
-        stmt.close();
-        connect.close();
+        if(!failedToConnect) {
+            stmt.close();
+            connect.close();
+        }
     }
 }

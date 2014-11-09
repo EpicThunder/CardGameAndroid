@@ -62,10 +62,16 @@ public class State {
     }
 
     public void addPlayer(Player player) { players.add(player); playersLost.add(false); playersSize = players.size(); }
-    public void setBoard(List<List<Cell>> _board) { board = new Grid(_board); }
+    public void setBoard(List<List<Cell>> _board) {
+        board = new Grid(_board);
+        if(board == null) board.colSize();
+    }
     public boolean addCardToBoard(Card card, int row, int col) { return board.getCell(row, col).placeCard(card); }
     public void newPlacementOfCard(Card card, int row, int col) { board.getCell(row, col).placeMovedCard(card); }
-    public int boardRowSize() { return board.rowSize(); }
+    public int boardRowSize() {
+        if(board == null) board.rowSize();
+        return board.rowSize();
+    }
     public int boardColSize() { return board.colSize(); }
     public Cell getCell(int row, int col) { return board.getCell(row, col); }
     public void newInitialState() throws InstantiationException, IllegalAccessException {

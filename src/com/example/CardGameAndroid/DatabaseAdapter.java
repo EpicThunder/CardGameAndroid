@@ -287,8 +287,8 @@ public class DatabaseAdapter {
             cols = DbHelper.TableUsableCardsCols;
             tableSelected = DbHelper.TableUsableCards;
         } else return null;
-        Cursor cursor = db.query( tableSelected,
-                cols, cols[1] + "=" + id, null, null, null, null);
+        Cursor cursor = db.query(tableSelected,
+                    cols, column + "='" + id + "'", null, null, null, null);
         return cursor;
     }
 }
